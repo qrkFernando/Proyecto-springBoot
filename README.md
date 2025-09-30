@@ -49,8 +49,8 @@ Una aplicación web completa para una librería online desarrollada con Spring B
    ```
 
 4. **Acceder a la aplicación**
-   - Aplicación web: http://localhost:8080
-   - Consola H2 Database: http://localhost:8080/h2-console
+   - Aplicación web: http://localhost:8082
+   - Consola H2 Database: http://localhost:8082/h2-console
      - JDBC URL: `jdbc:h2:mem:testdb`
      - Usuario: `sa`
      - Contraseña: `password`
