@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - Librería Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="fas fa-book"></i> Librería Online
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Inicio</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Categorías
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li th:each="category : ${categories}">
+                                <a class="dropdown-item" th:href="@{/books/category/{category}(category=${category})}" 
+                                   th:text="${category}">Categoría</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- Búsqueda -->
+                <form class="d-flex me-3" th:action="@{/search}" method="get">
+                    <input class="form-control me-2" type="search" name="keyword" placeholder="Buscar libros..." 
+                           th:value="${searchKeyword}">
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                
+                <!-- Carrito -->
+                <a th:href="@{/cart}" class="btn btn-outline-light position-relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          th:if="${cartItemCount > 0}" th:text="${cartItemCount}">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mensajes de alerta -->
+    <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" 
+             th:if="${successMessage}" th:text="${successMessage}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" 
+             th:if="${errorMessage}" th:text="${errorMessage}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+    <main th:fragment="content" class="container my-4">
+        <!-- Hero Section -->
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Bienvenido a nuestra Librería Online</h1>
+                <p class="col-md-8 fs-4">Descubre una amplia selección de libros de todos los géneros. 
+                   Desde clásicos hasta las últimas novedades.</p>
+                <a th:href="@{/search}" class="btn btn-primary btn-lg">Explorar Catálogo</a>
+            </div>
+        </div>
+        
+        <!-- Filtros rápidos -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3>Categorías Populares</h3>
+                <div class="d-flex flex-wrap gap-2">
+                    <a th:each="category : ${categories}" 
+                       th:href="@{/books/category/{category}(category=${category})}"
+                       class="btn btn-outline-primary" th:text="${category}">Categoría</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Grid de libros -->
+        <div class="row">
+            <div class="col-12">
+                <h3>Libros Destacados</h3>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="book : ${books}">
+                <div class="card h-100">
+                    <img th:src="${book.imageUrl}" 
+                         class="card-img-top" 
+                         th:alt="'Portada de ' + ${book.title}"
+                         loading="lazy"
+                         onerror="handleImageError(this)">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title" th:text="${book.title}">Título del libro</h5>
+                        <p class="card-text text-muted" th:text="${book.author}">Autor</p>
+                        <p class="card-text" th:text="${#strings.abbreviate(book.description, 100)}">Descripción...</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 text-primary mb-0" th:text="'$' + ${book.price}">$0.00</span>
+                                <span class="badge bg-secondary" th:text="${book.category}">Categoría</span>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-outline-primary btn-sm w-100">
+                                        Ver Detalles
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <form th:action="@{/cart/add}" method="post" class="d-inline">
+                                        <input type="hidden" name="bookId" th:value="${book.id}">
+                                        <button type="submit" class="btn btn-primary btn-sm w-100" 
+                                                th:disabled="${book.stock <= 0}">
+                                            <i class="fas fa-cart-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <small class="text-muted" th:if="${book.stock > 0}" th:text="'Stock: ' + ${book.stock}">Stock: 0</small>
+                            <small class="text-danger" th:if="${book.stock <= 0}">Sin stock</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensaje si no hay libros -->
+        <div class="alert alert-info" th:if="${#lists.isEmpty(books)}">
+            <h4>No hay libros disponibles</h4>
+            <p>Vuelve más tarde para ver nuestras novedades.</p>
+        </div>
+    </main>
+    
+    <!-- Footer con Logo -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- Logo y Descripción -->
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="/images/logo-book.png" 
+                             alt="Logo Librería" 
+                             style="height: 35px; width: auto; margin-right: 12px;"
+                             onerror="this.style.display='none'">
+                        <h5 class="mb-0"><i class="fas fa-book"></i> Librería Online</h5>
+                    </div>
+                    <p class="mb-2">Tu librería de confianza con los mejores libros al mejor precio.</p>
+                    <p class="mb-0"><small class="text-muted">Desde 2024 conectando lectores con grandes historias.</small></p>
+                </div>
+                
+                <!-- Contacto -->
+                <div class="col-md-4 mb-3">
+                    <h6><i class="fas fa-address-book"></i> Contacto</h6>
+                    <p class="mb-1">
+                        <i class="fas fa-envelope"></i> info@libreria.com<br>
+                        <i class="fas fa-phone"></i> +1 234 567 890<br>
+                        <i class="fas fa-map-marker-alt"></i> Calle de los Libros 123
+                    </p>
+                </div>
+                
+                <!-- Enlaces Rápidos -->
+                <div class="col-md-4 mb-3">
+                    <h6><i class="fas fa-link"></i> Enlaces Rápidos</h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="/" class="text-light text-decoration-none">🏠 Inicio</a></li>
+                                <li><a href="/cart" class="text-light text-decoration-none">🛒 Carrito</a></li>
+                                <li><a href="#" class="text-light text-decoration-none">📞 Soporte</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-light text-decoration-none">📋 Políticas</a></li>
+                                <li><a href="#" class="text-light text-decoration-none">🚚 Envíos</a></li>
+                                <li><a href="#" class="text-light text-decoration-none">⭐ Reseñas</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-3" style="border-color: #6c757d;">
+            
+            <!-- Copyright -->
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">
+                        <small>&copy; 2024 Librería Online. Todos los derechos reservados.</small>
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex justify-content-md-end align-items-center">
+                        <img src="/images/logo-book.png" 
+                             alt="Logo" 
+                             style="height: 25px; width: auto; margin-right: 10px; opacity: 0.7;"
+                             onerror="this.style.display='none'">
+                        <small class="text-muted">Hecho con ❤️ para los amantes de los libros</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <!-- 🔒 Sistema Anti-Inspección para Protección -->
+    <script th:src="@{/js/anti-inspect.js}"></script>
+</body>
+</html>

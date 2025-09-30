@@ -1,0 +1,203 @@
+/* Estilos personalizados para la Librería Online */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navbar personalizado */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Cards de libros */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.card-img-top {
+    transition: opacity 0.3s ease;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    object-fit: cover;
+    width: 100%;
+    height: 300px;
+    /* Forzar recarga de imágenes */
+    cache-control: no-cache;
+}
+
+/* Fallback para imágenes que no cargan */
+.card-img-top:not([src]), .card-img-top[src=""], .card-img-top[src*="error"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-img-top:not([src])::before, 
+.card-img-top[src=""]::before,
+.card-img-top[src*="error"]::before {
+    content: "📚\APORTADA\ADEL LIBRO";
+    white-space: pre-line;
+}
+
+.card:hover .card-img-top {
+    opacity: 0.9;
+}
+
+/* Botones personalizados */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+}
+
+/* Hero section */
+.jumbotron {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    border: none;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+/* Breadcrumb personalizado */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    font-size: 1.2em;
+    color: #6c757d;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+/* Alertas */
+.alert {
+    border: none;
+    border-radius: 10px;
+}
+
+/* Carrito */
+.position-relative .badge {
+    font-size: 0.6em;
+}
+
+/* Formularios */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Precio destacado */
+.text-primary {
+    color: #007bff !important;
+    font-weight: 600;
+}
+
+/* Animaciones de carga */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .jumbotron {
+        padding: 2rem 1rem !important;
+    }
+    
+    .jumbotron h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-group .btn {
+        font-size: 0.7rem;
+    }
+}
+
+/* Efectos especiales */
+.card-img-top {
+    border-radius: 8px 8px 0 0;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Stock indicators */
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.pulse {
+    animation: pulse 1.5s infinite;
+}
