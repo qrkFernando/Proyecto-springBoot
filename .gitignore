@@ -87,3 +87,42 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+# Application specific
+/uploads/
+/logs/
+
+# Spring Boot specific
+application-*.properties
+!application.properties
+!application-*.yml.example
+
+# Test files
+*.bat
+test-*.html
+
+# IDE specific files
+.vscode/
+*.code-workspace
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Maven wrapper (optional - uncomment to include wrapper)
+# !.mvn/wrapper/maven-wrapper.jar
+# !.mvn/wrapper/maven-wrapper.properties
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Data directories
+/data/
+/postgres-data/
+/redis-data/

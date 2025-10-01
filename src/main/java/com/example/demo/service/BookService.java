@@ -55,6 +55,11 @@ public class BookService {
         return bookRepository.save(book);
     }
     
+    // Método alternativo para guardar (usado por PurchaseService)
+    public Book save(Book book) {
+        return bookRepository.save(book);
+    }
+    
     // Eliminar libro
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
@@ -78,5 +83,17 @@ public class BookService {
             }
             bookRepository.save(book);
         }
+    }
+    
+    public long countBooks() {
+        return bookRepository.count();
+    }
+    
+    public long countAvailableBooks() {
+        return bookRepository.countByAvailableTrue();
+    }
+    
+    public List<Book> findAvailableBooks() {
+        return bookRepository.findByAvailableTrue();
     }
 }

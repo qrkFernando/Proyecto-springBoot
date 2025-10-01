@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Compra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-book"></i> Librería Online
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/purchase/history">
+                            <i class="fas fa-history me-1"></i>Mis Compras
+                        </a>
+                    </li>
+                </ul>
+                <a href="/cart" class="btn btn-outline-light position-relative">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          th:if="${cartItemCount > 0}" th:text="${cartItemCount}">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mensajes de alerta -->
+    <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" 
+             th:if="${successMessage}" th:text="${successMessage}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" 
+             th:if="${errorMessage}" th:text="${errorMessage}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <main>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Encabezado -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2>Detalles de la Compra #<span th:text="${purchase.id}"></span></h2>
+                            <p class="text-muted mb-0">
+                                Realizada el <span th:text="${#temporals.format(purchase.purchaseDate, 'dd/MM/yyyy HH:mm')}"></span>
+                            </p>
+                        </div>
+                        <div>
+                            <a href="/purchase/history" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Volver al Historial
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Estados -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Estado de la Compra</h6>
+                                    <span class="badge fs-6" 
+                                          th:classappend="${purchase.status.name() == 'DELIVERED' ? 'bg-success' : 
+                                                         purchase.status.name() == 'SHIPPED' ? 'bg-info' :
+                                                         purchase.status.name() == 'CONFIRMED' ? 'bg-primary' :
+                                                         purchase.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-warning'}"
+                                          th:text="${purchase.status.name()}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" th:if="${payment}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Estado del Pago</h6>
+                                    <span class="badge fs-6" 
+                                          th:classappend="${payment.paymentStatus.name() == 'COMPLETED' ? 'bg-success' : 
+                                                         payment.paymentStatus.name() == 'PENDING' ? 'bg-warning' : 'bg-danger'}"
+                                          th:text="${payment.paymentStatus.displayName}"></span>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            Método: <span th:text="${payment.paymentMethod.displayName}"></span>
+                                        </small>
+                                        <div th:if="${payment.transactionId}">
+                                            <small class="text-muted">
+                                                ID Transacción: <span th:text="${payment.transactionId}"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información del Cliente y Envío -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Información del Cliente</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2"><strong>Nombre:</strong> <span th:text="${purchase.customerName}"></span></p>
+                                    <p class="mb-2"><strong>Email:</strong> <span th:text="${purchase.customerEmail}"></span></p>
+                                    <p class="mb-0"><strong>Teléfono:</strong> <span th:text="${purchase.customerPhone}"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Dirección de Envío</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-0" th:text="${purchase.shippingAddress}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Artículos Comprados -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Artículos Comprados</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Precio Unitario</th>
+                                            <th>Cantidad</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item : ${purchase.purchaseItems}">
+                                            <td>
+                                                <div>
+                                                    <strong th:text="${item.bookTitle}"></strong>
+                                                    <br>
+                                                    <small class="text-muted" th:text="'por ' + ${item.bookAuthor}"></small>
+                                                </div>
+                                            </td>
+                                            <td th:text="'$' + ${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></td>
+                                            <td th:text="${item.quantity}"></td>
+                                            <td th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}"></td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="table-light">
+                                        <tr>
+                                            <th colspan="3">Total:</th>
+                                            <th th:text="'$' + ${#numbers.formatDecimal(purchase.totalAmount, 1, 2)}" class="text-success"></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de Pago Detallada -->
+                    <div th:if="${payment}" class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Información de Pago</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Método de Pago:</strong> 
+                                        <span th:text="${payment.paymentMethod.displayName}"></span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Estado del Pago:</strong> 
+                                        <span th:text="${payment.paymentStatus.displayName}"></span>
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>Monto:</strong> 
+                                        <span th:text="'$' + ${#numbers.formatDecimal(payment.amount, 1, 2)}"></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2" th:if="${payment.transactionId}">
+                                        <strong>ID de Transacción:</strong> 
+                                        <span th:text="${payment.transactionId}"></span>
+                                    </p>
+                                    <p class="mb-2" th:if="${payment.cardLastFour}">
+                                        <strong>Tarjeta:</strong> 
+                                        **** **** **** <span th:text="${payment.cardLastFour}"></span>
+                                    </p>
+                                    <p class="mb-2" th:if="${payment.paymentDate}">
+                                        <strong>Fecha de Pago:</strong> 
+                                        <span th:text="${#temporals.format(payment.paymentDate, 'dd/MM/yyyy HH:mm')}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div th:if="${payment.notes}" class="mt-3">
+                                <strong>Notas:</strong>
+                                <p class="text-muted" th:text="${payment.notes}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Seguimiento del Pedido -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Seguimiento del Pedido</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="timeline">
+                                <div class="timeline-item" 
+                                     th:classappend="${purchase.status.name() == 'PENDING' or 
+                                                    purchase.status.name() == 'CONFIRMED' or 
+                                                    purchase.status.name() == 'PROCESSING' or 
+                                                    purchase.status.name() == 'SHIPPED' or 
+                                                    purchase.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h6>Pedido Recibido</h6>
+                                        <small class="text-muted" th:text="${#temporals.format(purchase.purchaseDate, 'dd/MM/yyyy HH:mm')}"></small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item" 
+                                     th:classappend="${purchase.status.name() == 'CONFIRMED' or 
+                                                    purchase.status.name() == 'PROCESSING' or 
+                                                    purchase.status.name() == 'SHIPPED' or 
+                                                    purchase.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h6>Pedido Confirmado</h6>
+                                        <small class="text-muted">Pago procesado exitosamente</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item" 
+                                     th:classappend="${purchase.status.name() == 'PROCESSING' or 
+                                                    purchase.status.name() == 'SHIPPED' or 
+                                                    purchase.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h6>En Preparación</h6>
+                                        <small class="text-muted">Preparando tu pedido</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item" 
+                                     th:classappend="${purchase.status.name() == 'SHIPPED' or 
+                                                    purchase.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h6>Enviado</h6>
+                                        <small class="text-muted">En camino a tu dirección</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="timeline-item" 
+                                     th:classappend="${purchase.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h6>Entregado</h6>
+                                        <small class="text-muted">Pedido completado</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Acciones -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="btn-group" role="group">
+                                <a href="/" class="btn btn-primary">
+                                    <i class="fas fa-home me-1"></i>Volver al Inicio
+                                </a>
+                                <a href="/purchase/history" class="btn btn-outline-primary">
+                                    <i class="fas fa-list me-1"></i>Mis Compras
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <style>
+            .timeline {
+                position: relative;
+                padding-left: 30px;
+            }
+            
+            .timeline::before {
+                content: '';
+                position: absolute;
+                left: 15px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: #dee2e6;
+            }
+            
+            .timeline-item {
+                position: relative;
+                margin-bottom: 20px;
+            }
+            
+            .timeline-marker {
+                position: absolute;
+                left: -22px;
+                top: 0;
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                background: #dee2e6;
+                border: 3px solid #fff;
+            }
+            
+            .timeline-item.completed .timeline-marker {
+                background: #28a745;
+            }
+            
+            .timeline-content h6 {
+                margin: 0 0 5px 0;
+                font-size: 14px;
+            }
+            
+            .timeline-item.completed .timeline-content h6 {
+                color: #28a745;
+            }
+        </style>
+
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-book"></i> Librería Online</h5>
+                    <p>Tu librería de confianza con los mejores libros al mejor precio.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Contacto</h6>
+                    <p>
+                        <i class="fas fa-envelope"></i> info@libreria.com<br>
+                        <i class="fas fa-phone"></i> +1 234 567 890
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

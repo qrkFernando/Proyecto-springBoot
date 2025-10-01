@@ -1,59 +1,88 @@
-# Librería Online - Spring Boot
+# 📚 Librería Online - Spring Boot
 
-Una aplicación web completa para una librería online desarrollada con Spring Boot, que permite a los usuarios explorar, buscar y comprar libros.
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.0-brightgreen.svg)
+![Java](https://img.shields.io/badge/Java-22-orange.svg)
+![Maven](https://img.shields.io/badge/Maven-3.9+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-## 🚀 Características
+Una aplicación web completa para una librería online desarrollada con **Spring Boot**, que permite a los usuarios explorar, buscar y comprar libros con un sistema completo de gestión de carritos y pagos.
 
-- **Catálogo de libros**: Visualización de libros con información detallada
-- **Búsqueda avanzada**: Búsqueda por título, autor y filtrado por categorías
-- **Carrito de compras**: Gestión completa del carrito con sesiones
-- **Categorías**: Organización de libros por géneros
-- **Diseño responsive**: Compatible con dispositivos móviles y tablets
-- **Base de datos en memoria**: H2 Database para desarrollo rápido
+## ✨ Características Principales
 
-## 🛠️ Tecnologías Utilizadas
+- 📖 **Catálogo de libros**: Visualización de libros con información detallada
+- 🔍 **Búsqueda avanzada**: Búsqueda por título, autor y filtrado por categorías
+- 🛒 **Carrito de compras**: Gestión completa del carrito con persistencia de sesión
+- 💳 **Sistema de pagos**: Procesamiento de pagos y confirmación de compras
+- 📊 **Panel administrativo**: Gestión de ventas y reportes
+- 📱 **Diseño responsive**: Compatible con dispositivos móviles y tablets
+- 🏷️ **Categorías**: Organización de libros por géneros
+- 📈 **Historial de compras**: Seguimiento completo de pedidos
 
-- **Backend**: Spring Boot 3.2.0
-- **Frontend**: Thymeleaf, Bootstrap 5, Font Awesome
-- **Base de datos**: H2 Database (en memoria)
-- **ORM**: Spring Data JPA / Hibernate
-- **Validación**: Spring Boot Validation
-- **Build**: Maven
+## 🛠️ Stack Tecnológico
 
-## 📋 Requisitos Previos
+### Backend
+- **Spring Boot** 3.3.0 - Framework principal
+- **Spring Data JPA** - Persistencia de datos
+- **Spring Web MVC** - Controladores REST y MVC
+- **Spring Boot Validation** - Validación de datos
+- **H2 Database** - Base de datos en memoria (desarrollo)
 
-- Java 17 o superior
-- Maven (opcional, se puede usar el wrapper incluido)
+### Frontend
+- **Thymeleaf** - Motor de plantillas
+- **Bootstrap 5** - Framework CSS
+- **Font Awesome** - Iconografía
+- **JavaScript ES6+** - Funcionalidades interactivas
 
-## 🔧 Instalación y Ejecución
+### Herramientas
+- **Maven** - Gestión de dependencias
+- **Java 21** - Lenguaje de programación
 
-1. **Clonar o descargar el proyecto**
+## 🚀 Inicio Rápido
+
+### Prerrequisitos
+- ☕ **Java 17+** (recomendado Java 21)
+- 📦 **Maven 3.6+** (opcional, incluye wrapper)
+- 🌐 **Navegador web moderno**
+
+### Instalación
+
+1. **Clonar el repositorio**
    ```bash
-   cd D:\ATAHUALPA\Proyecto-springBoot
+   git clone https://github.com/tu-usuario/libreria-online.git
+   cd libreria-online
    ```
 
-2. **Compilar el proyecto** (si tienes Maven instalado)
+2. **Compilar el proyecto**
    ```bash
    mvn clean compile
    ```
 
 3. **Ejecutar la aplicación**
    ```bash
+   # Con Maven instalado
    mvn spring-boot:run
-   ```
    
-   O si no tienes Maven instalado, usar el wrapper:
-   ```bash
+   # O usando el wrapper (sin Maven)
    ./mvnw spring-boot:run    # Linux/Mac
    mvnw.cmd spring-boot:run  # Windows
    ```
 
 4. **Acceder a la aplicación**
-   - Aplicación web: http://localhost:8082
-   - Consola H2 Database: http://localhost:8082/h2-console
+   - 🌐 **Aplicación**: http://localhost:8082
+   - 🗄️ **Base de datos H2**: http://localhost:8082/h2-console
      - JDBC URL: `jdbc:h2:mem:testdb`
      - Usuario: `sa`
      - Contraseña: `password`
+
+### Perfiles de Configuración
+
+```bash
+# Desarrollo (por defecto)
+mvn spring-boot:run -Dspring.profiles.active=dev
+
+# Producción
+mvn spring-boot:run -Dspring.profiles.active=prod
+```
 
 ## 📁 Estructura del Proyecto
 

@@ -29,4 +29,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     // Obtener todas las categorías únicas
     @Query("SELECT DISTINCT b.category FROM Book b ORDER BY b.category")
     List<String> findAllCategories();
+    
+    // Contar libros disponibles
+    long countByAvailableTrue();
 }

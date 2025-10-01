@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Aplicación Spring Boot
+  libreria-app:
+    build: .
+    container_name: libreria-online
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SERVER_PORT=8080
+      - DATABASE_URL=jdbc:postgresql://postgres:5432/libreria_online
+      - DB_USERNAME=libreria_user
+      - DB_PASSWORD=libreria_password
+    depends_on:
+      - postgres
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    networks:
+      - libreria-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Base de datos PostgreSQL (para producción)
+  postgres:
+    image: postgres:15-alpine
+    container_name: libreria-postgres
+    environment:
+      - POSTGRES_DB=libreria_online
+      - POSTGRES_USER=libreria_user
+      - POSTGRES_PASSWORD=libreria_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - libreria-network
+    restart: unless-stopped
+
+  # Adminer para gestión de base de datos
+  adminer:
+    image: adminer:latest
+    container_name: libreria-adminer
+    ports:
+      - "8081:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    networks:
+      - libreria-network
+    restart: unless-stopped
+
+  # Redis para caché (opcional)
+  redis:
+    image: redis:7-alpine
+    container_name: libreria-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - libreria-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  libreria-network:
+    driver: bridge

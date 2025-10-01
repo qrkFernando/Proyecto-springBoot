@@ -9,14 +9,26 @@
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>Demo project for Spring Boot</description>
+    <artifactId>libreria-online</artifactId>
+    <version>1.0.0</version>
+    <name>Librería Online</name>
+    <description>Sistema completo de librería online con Spring Boot - gestión de catálogo, carrito de compras y sistema de ventas</description>
+    <url>https://github.com/tu-usuario/libreria-online</url>
+    
+    <developers>
+        <developer>
+            <name>Atahualpa</name>
+            <email>tu-email@example.com</email>
+        </developer>
+    </developers>
     <properties>
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>3.3.0</spring-boot.version>
+        <maven.test.skip>false</maven.test.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -48,10 +60,48 @@
     </dependencies>
 
     <build>
+        <finalName>libreria-online</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Plugin para compilación con Java 21 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            
+            <!-- Plugin para tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <skipTests>false</skipTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>
